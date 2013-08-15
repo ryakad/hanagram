@@ -6,7 +6,8 @@
 module Main where
 
 import System.Environment (getArgs)
-import Hanagram (showMatches, sayMatches, getMatches)
+import Hanagram (getMatches)
+import Hanagram.Presentation (showResults, sayResults)
 
 main :: IO ()
 main = do
@@ -15,6 +16,6 @@ main = do
     let words = lines contents
     let findLength = read (args !! 0) :: Int
     let matches = [ word | word <- getMatches (args !! 1) words, length word == findLength]
-    showMatches matches
-    sayMatches matches
+    showResults matches
+    sayResults matches
     putStrLn ""

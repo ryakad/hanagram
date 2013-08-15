@@ -21,7 +21,7 @@ main :: IO ()
 main = hspec $ do
     describe "Hanagram.hs" $ do
         it "can find matches" $ do
-            getMatches "test" [] `shouldBe` []
             getMatches "personart" wordList `shouldBe` ["person", "part"]
             getMatches "work" wordList `shouldBe` ["work"]
             getMatches "" wordList `shouldBe` []
+            getMatches "test" [] `shouldBe` []

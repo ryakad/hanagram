@@ -1,47 +1,38 @@
 -- Haskell Anagram Library
---
 -- Copyright (c) Ryan Kadwell <ryan@riaka.ca>
+--
+-- Main hanagram module.
+--
 -- Author: Ryan Kadwell <ryan@riaka.ca>
 
 -- | Provides support for processing anagrams in haskell
 module Hanagram (
-      showMatches
-    , sayMatches
-    , getMatches
+      getMatches
     ) where
 
 import Data.List
 import Data.Tuple
-import System.Cmd
-import System.Exit
 
--- | Display the matches to the user one per line
-showMatches :: [String] -> IO ()
-showMatches [] = do
-    putStrLn ""
-showMatches (x:xs) = do
-    putStrLn x
-    showMatches xs
+-- | Takes a string of letters and a list of possible words and returns the
+-- words that can be formed using the letters without using any letter more
+-- than once
+getMatchesNoDups :: String -> [String] -> [String]
+getMatchesNoDups letters words =
+    [ word | word <- words, canMake word letters False ]
 
--- | Uses OSx text to speech to say the matches to the user
-sayMatches :: [[Char]] -> IO ExitCode
-sayMatches [] = system $ "echo ''"
-sayMatches (x:xs) = do
-    system $ "say " ++ x ++ " "
-    sayMatches xs
-
--- | Takes a string of letters and a list of all possible words in the
--- dictionary and returns the ones that can eb formed from the list
+-- | Takes a string of letters and a list of possible words and returns the
+-- words that can be formed using the letters
 getMatches :: String -> [String] -> [String]
 getMatches letters words =
-    [ word | word <- words, canMake word letters ]
+    [ word | word <- words, canMake word letters True ]
 
 -- see if all letters in the word are in the array of letters
-canMake :: String -> String -> Bool
-canMake [] _ = True
-canMake (x:xs) letters = if x `elem` letters
-                         then canMake xs $ removeOne x letters
-                         else False
+canMake :: String -> String -> Bool -> Bool
+canMake [] _ _ = True
+canMake (x:xs) letters allowDups =
+    if x `elem` letters
+    then canMake xs (if allowDups then letters else removeOne x letters) allowDups
+    else False
 
 -- remove one character from the string to give us matches that do not allow
 -- duplicate letters in the matching

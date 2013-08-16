@@ -104,6 +104,10 @@ main = do
 
     words <- parseFiles files
 
+    when (words == []) $ do
+        putStrLn "hanagram: error: No words to check against. \nEnsure you have provided a path to a usable dictionary file"
+        exitWith $ ExitFailure 1
+
     let getMatchesFunction = if optDups opts
         then getMatchesDups
         else getMatches

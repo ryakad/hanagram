@@ -5,13 +5,14 @@
 
 module Main (main) where
 
-import System.Environment (getArgs)
+import Control.Monad (liftM)
+import Data.Function (on)
+import Data.List (sortBy)
+import Data.Maybe (fromMaybe)
 import Hanagram (getMatches, getMatchesNoDups)
 import Hanagram.Presentation (showResults, sayResults)
 import System.Console.GetOpt
 import System.Environment (getArgs)
-import Data.Maybe (fromMaybe)
-import Control.Monad (liftM)
 
 data Options = Options {
       optSpeech :: Bool
@@ -78,7 +79,7 @@ main = do
 
     let searchLength = fixLength (optLength opts)
     let matches = if searchLength == 0
-        then [ word | word <- getMatchesFunction (optLetters opts) words]
+        then sortBy (compare `on` length) [ word | word <- getMatchesFunction (optLetters opts) words]
         else [ word | word <- getMatchesFunction (optLetters opts) words, length word == searchLength]
 
     showResults matches

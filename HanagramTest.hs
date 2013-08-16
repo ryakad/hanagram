@@ -6,10 +6,10 @@
 -- Author: Ryan Kadwell <ryan@riaka.ca>
 
 
-import Test.Hspec
-import Test.QuickCheck
 import Control.Exception (evaluate)
 import Hanagram
+import Test.Hspec
+import Test.QuickCheck
 
 -- list of words to test against
 wordList = ["time", "person", "year", "way", "day", "thing", "man", "world",

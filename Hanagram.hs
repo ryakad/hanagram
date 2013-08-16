@@ -8,7 +8,7 @@
 -- | Provides support for processing anagrams in haskell
 module Hanagram (
       getMatches
-    , getMatchesNoDups
+    , getMatchesDups
     ) where
 
 import Data.List
@@ -17,14 +17,14 @@ import Data.Tuple
 -- | Takes a string of letters and a list of possible words and returns the
 -- words that can be formed using the letters without using any letter more
 -- than once
-getMatchesNoDups :: String -> [String] -> [String]
-getMatchesNoDups letters words =
+getMatches :: String -> [String] -> [String]
+getMatches letters words =
     [ word | word <- words, canMake word letters False ]
 
 -- | Takes a string of letters and a list of possible words and returns the
 -- words that can be formed using the letters
-getMatches :: String -> [String] -> [String]
-getMatches letters words =
+getMatchesDups :: String -> [String] -> [String]
+getMatchesDups letters words =
     [ word | word <- words, canMake word letters True ]
 
 -- see if all letters in the word are in the array of letters

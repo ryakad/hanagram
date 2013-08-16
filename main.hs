@@ -9,21 +9,21 @@ import Control.Monad (liftM)
 import Data.Function (on)
 import Data.List (sortBy)
 import Data.Maybe (fromMaybe)
-import Hanagram (getMatches, getMatchesNoDups)
+import Hanagram (getMatches, getMatchesDups)
 import Hanagram.Presentation (showResults, sayResults)
 import System.Console.GetOpt
 import System.Environment (getArgs)
 
 data Options = Options {
       optSpeech :: Bool
-    , optNoDups :: Bool
+    , optDups :: Bool
     , optLength :: Maybe String
     , optLetters :: String
     } deriving (Show)
 
 defaultOptions = Options {
       optSpeech = False
-    , optNoDups = False
+    , optDups = False
     , optLength = Nothing
     , optLetters = []
     }
@@ -33,9 +33,9 @@ options = [
       Option ['s'] ["say"]
         (NoArg (\ opts -> opts { optSpeech = True }))
         "enable text to speech processing"
-    , Option [] ["no-dups"]
-        (NoArg (\ opts -> opts { optNoDups = True }))
-        "when finding words that match do not allow letters to be used more than once"
+    , Option [] ["dups"]
+        (NoArg (\ opts -> opts { optDups = True }))
+        "when finding words that match allow letters to be used more than once"
     , Option [] ["length"]
         (OptArg ((\ f opts -> opts { optLength = Just f }) . fromMaybe "0" ) "INTEGER")
         "limit results to words of a specific length"
@@ -73,8 +73,8 @@ main = do
     (opts, files) <- parseOpts args
     words <- readFiles files
 
-    let getMatchesFunction = if optNoDups opts
-        then getMatchesNoDups
+    let getMatchesFunction = if optDups opts
+        then getMatchesDups
         else getMatches
 
     let searchLength = fixLength (optLength opts)

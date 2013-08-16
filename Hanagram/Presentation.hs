@@ -11,7 +11,7 @@ module Hanagram.Presentation (
     ) where
 
 import System.Cmd
-import System.Exit
+import System.Exit (ExitCode(..))
 
 -- | Display the matches to the user one per line
 showResults :: [String] -> IO ()

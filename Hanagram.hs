@@ -8,6 +8,7 @@
 -- | Provides support for processing anagrams in haskell
 module Hanagram (
       getMatches
+    , getMatchesNoDups
     ) where
 
 import Data.List

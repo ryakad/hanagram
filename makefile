@@ -1,8 +1,8 @@
-all:
-	@ghc --make main.hs -o hanagram
+hanagram:
+	ghc --make main.hs -o hanagram
 
 test:
 	@runhaskell HanagramTest.hs
 
 clean:
-	@rm *.hi *.o hanagram
+	@rm -Rfv *.hi *.o hanagram

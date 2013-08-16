@@ -21,8 +21,8 @@ showResults (x:xs) = do
     showResults xs
 
 -- | Uses OSx text to speech to say the matches to the user
-sayResults :: [[Char]] -> IO ExitCode
-sayResults [] = return ExitSuccess
+sayResults :: [[Char]] -> IO ()
+sayResults [] = return ()
 sayResults (x:xs) = do
     system $ "say " ++ x ++ " "
     sayResults xs

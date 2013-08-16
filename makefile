@@ -5,4 +5,4 @@ test:
 	@runhaskell HanagramTest.hs
 
 clean:
-	@rm -Rfv *.hi *.o hanagram
+	@find . -name "*.o" -o -name "*.hi" -o -name "hanagram" | xargs rm

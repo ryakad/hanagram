@@ -56,7 +56,7 @@ options = [
     , Option [] ["dups"]
         (NoArg (\ opts -> opts { optDups = True }))
         "When finding words that match allow letters to be used more than once"
-    , Option [] ["length"]
+    , Option "n" ["length"]
         (OptArg ((\ f opts -> opts { optLength = Just f }) . fromMaybe "0" ) "INTEGER")
         "Limit results to words of a specific length"
     , Option "l" ["letters"]
@@ -89,7 +89,7 @@ fixLength :: Maybe String -> Int
 fixLength Nothing  = 0
 fixLength (Just x) = (read x :: Int)
 
-main :: IO ()
+main :: IO (ExitCode)
 main = do
     args <- getArgs
     (opts, files) <- parseOpts args
@@ -114,3 +114,7 @@ main = do
         else [ word | word <- getMatchesFunction (optLetters opts) words, length word == searchLength]
 
     showResults matches
+
+    when (optSpeech opts) $ sayResults matches
+
+    return ExitSuccess

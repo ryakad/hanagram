@@ -1,13 +1,14 @@
 Hanagram
 ========
 
-Haskell library for finding anagrams
+Haskell library for finding anagrams.
 
 Install
 -------
 
 Installs with a basic make interface you will just need to make sure that
-you have ghc to compile it.
+you have *The Glorious Glasgow Haskell Compilation System* (`ghc`) to
+compile the application.
 
 ```bash
 make

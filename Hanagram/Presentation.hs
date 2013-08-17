@@ -11,6 +11,7 @@
 module Hanagram.Presentation (
       showResults
     , sayResults
+    , showAndSayResults
     ) where
 
 import System.Cmd
@@ -27,5 +28,14 @@ showResults (x:xs) = do
 sayResults :: [[Char]] -> IO ()
 sayResults [] = return ()
 sayResults (x:xs) = do
-    system $ "say " ++ x ++ " "
+    system $ "say -v Vicki " ++ x ++ " "
     sayResults xs
+
+-- | Uses OSx text to speech processing but also show results as they are
+-- being spoken
+showAndSayResults :: [String] -> IO ()
+showAndSayResults [] = return ()
+showAndSayResults (x:xs) = do
+    putStrLn x
+    system $ "say -v Vicki " ++ x ++ " "
+    showAndSayResults xs

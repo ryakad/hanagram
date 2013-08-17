@@ -9,11 +9,12 @@
 module Main (main) where
 
 import Control.Monad (when)
+import Data.Char (toLower)
 import Data.Function (on)
-import Data.List (sortBy)
+import Data.List (sortBy, nub)
 import Data.Maybe (fromMaybe)
 import Hanagram (getMatches, getMatchesDups)
-import Hanagram.Presentation (showResults, sayResults)
+import Hanagram.Presentation (showResults, sayResults, showAndSayResults)
 import System.Console.GetOpt
 import System.Environment (getArgs)
 import System.Exit (exitWith, ExitCode(..))
@@ -30,6 +31,7 @@ usageString options = usageInfo header options
 data Options = Options {
       optVersion :: Bool
     , optHelp :: Bool
+    , optOrdered :: Bool
     , optSpeech :: Bool
     , optDups :: Bool
     , optLength :: Maybe String
@@ -39,6 +41,7 @@ data Options = Options {
 defaultOptions = Options {
       optVersion = False
     , optHelp = False
+    , optOrdered = False
     , optSpeech = False
     , optDups = False
     , optLength = Nothing
@@ -48,11 +51,14 @@ defaultOptions = Options {
 options :: [OptDescr (Options -> Options)]
 options = [
       Option "v" ["version"]
-        (NoArg (\ opts -> opts { optVersion = True}))
+        (NoArg (\ opts -> opts { optVersion = True }))
         "Display version"
     , Option "h?" ["help"]
-        (NoArg (\ opts -> opts { optHelp = True}))
+        (NoArg (\ opts -> opts { optHelp = True }))
         "Display help message"
+    , Option "o" ["ordered"]
+        (NoArg (\ opts -> opts { optOrdered = True }))
+        "Display the output sorted based on word length"
     , Option "s" ["say"]
         (NoArg (\ opts -> opts { optSpeech = True }))
         "Enable text to speech processing"
@@ -73,7 +79,6 @@ parseOpts argv =
     case getOpt Permute options argv of
         (o, n, [])   -> return (foldl (flip id) defaultOptions o, n)
         (_, _, errs) -> ioError (userError (concat errs ++ usageString options))
-
 
 -- | Read an array of files and return all the lines that are contained.
 -- This allows us to pass dict files where it contains one word per line or
@@ -111,17 +116,25 @@ main = do
         putStrLn "hanagram: error: No words to check against. \nEnsure you have provided a path to a usable dictionary file"
         exitWith $ ExitFailure 1
 
-    let getMatchesFunction = if optDups opts
-        then getMatchesDups
-        else getMatches
+    let getMatchesFunction = if optDups opts then getMatchesDups else getMatches
+
+    -- need case insesitive searching
+    let filteredWords = [ map toLower word | word <- words ]
 
     let searchLength = fixLength (optLength opts)
     let matches = if searchLength == 0
-        then sortBy (compare `on` length) [ word | word <- getMatchesFunction (optLetters opts) words]
-        else [ word | word <- getMatchesFunction (optLetters opts) words, length word == searchLength]
+        then [ word | word <- getMatchesFunction (optLetters opts) filteredWords]
+        else [ word | word <- getMatchesFunction (optLetters opts) filteredWords, length word == searchLength]
 
-    showResults matches
+    let sortedMatches = if optOrdered opts
+        then sortBy (compare `on` length) matches
+        else matches
 
-    when (optSpeech opts) $ sayResults matches
+    -- show results omiting any duplicates. We filter duplicates at this
+    -- point because its not a cheap process...
+    let filteredResults = nub sortedMatches
+    if optSpeech opts
+        then showAndSayResults filteredResults
+        else showResults filteredResults
 
     return ExitSuccess

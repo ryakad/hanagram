@@ -1,0 +1,6 @@
+language: haskell
+
+install:
+    - cabal install hspec
+
+script: make test

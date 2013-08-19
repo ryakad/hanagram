@@ -1,6 +1,8 @@
 Hanagram
 ========
 
+[![Build Status](https://secure.travis-ci.org/ryakad/hanagram.png)](http://travis-ci.org/ryakad/hanagram)
+
 Haskell library for finding anagrams.
 
 Install
